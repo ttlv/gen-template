@@ -41,7 +41,11 @@ Comments
 // {{.StructName}} struct is a row record of the {{.TableName}} table in the {{.DatabaseName}} database
 type {{.StructName}} struct {
 	gorm.Model
-    {{range .TableInfo.Fields}}{{.}}
+    {{$filterMethod := .TableInfo.IsFilterField}}
+    {{range .TableInfo.Fields}}
+    {{if not (call $filterMethod .)}}
+        {{.}}
+    {{end}}
     {{end}}
 }
 {{else}}
@@ -49,6 +53,7 @@ type {{.StructName}} struct {
 // {{.StructName}} struct is a row record of the {{.TableName}} table in the {{.DatabaseName}} database
 /*
 type {{.StructName}} struct {
+	gorm.Model
     {{range .TableInfo.Fields}}{{.}}
     {{end}}
 }
